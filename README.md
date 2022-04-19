@@ -17,6 +17,21 @@ about python3.8 + django 3.2.9
     |       |-- serializers.py-tpl
     |       |-- urls.py-tpl
 
+    |-- account   # 账号管理模块
+    |   |-- admin.py
+    |   |-- apps.py
+    |   |-- models.py
+    |   |-- tests.py
+    |   |-- views.py
+    |   |-- __init__.py
+    |   |-- migrations
+    |   |   |-- __init__.py
+    |   |-- rest
+    |   |   |-- api.py
+    |   |   |-- filters.py
+    |   |   |-- serializers.py
+    |   |   |-- urls.py
+
     |-- common   # 工具类
     |   |-- admin.py
     |   |-- apps.py

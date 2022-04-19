@@ -27,3 +27,5 @@ ROOT_URL = ""
 DEBUG = True  # 是否开启调试模式
 
 ALLOWED_HOSTS = ['*']
+
+IMAGE_QUANLITY = 85
