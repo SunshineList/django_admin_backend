@@ -29,3 +29,5 @@ DEBUG = True  # 是否开启调试模式
 ALLOWED_HOSTS = ['*']
 
 IMAGE_QUANLITY = 85
+
+STAFF_IMAGE_CAPTCHA_LIFETIME = 5 # 图片验证码有效期

@@ -6,7 +6,18 @@ from django.db import models
 from imagekit.models import ProcessedImageField
 
 
-class UsersModel(models.Model, AbstractUser):
+class ImageCaptcha(models.Model):
+    uuid = models.UUIDField('uuid4', primary_key=True)
+    captcha = models.CharField('图片验证码值', max_length=10)
+    is_active = models.BooleanField('可用', default=False)
+    expire_time = models.DateTimeField('验证码过期时间', db_index=True)
+
+    class Meta:
+        verbose_name = "管理后台登录验证图片"
+        verbose_name_plural = verbose_name
+
+
+class UsersModel(AbstractUser):
     ADMIN = "ADMIN"
     USER = "USER"
 
