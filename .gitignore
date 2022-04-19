@@ -21,4 +21,4 @@ node_modules
 __pycache__
 
 conf/
-!conf/env.example.py
+!conf/env_example.py
