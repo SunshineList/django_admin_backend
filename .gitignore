@@ -20,5 +20,5 @@ node_modules
 !*/migrations/__init__.py
 __pycache__
 
-conf/
-!conf/env_example.py
+/conf/env.py
+!app_template/migrations/__init__.py-tpl
