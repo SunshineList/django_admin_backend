@@ -19,3 +19,6 @@ node_modules
 */migrations/*
 !*/migrations/__init__.py
 __pycache__
+
+conf/
+!conf/env.example.py
