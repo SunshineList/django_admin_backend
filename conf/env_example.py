@@ -21,3 +21,9 @@ DATABASE_PORT = 3306
 DATABASE_USER = "root"
 # 数据库密码
 DATABASE_PASSWORD = "123456"
+
+ROOT_URL = ""
+
+DEBUG = True  # 是否开启调试模式
+
+ALLOWED_HOSTS = ['*']
