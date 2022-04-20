@@ -287,3 +287,11 @@ CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'  # 加减乘除验证
 
 
 AUTH_USER_MODEL = 'account.UsersModel'
+
+
+########################## 跨域问题只在开发环境下配置
+if DEBUG:
+    INSTALLED_APPS.append('corsheaders')
+    MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
+    CORS_ORIGIN_ALLOW_ALL = True
+    CORS_ALLOW_CREDENTIALS = True

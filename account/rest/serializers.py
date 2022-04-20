@@ -52,6 +52,7 @@ class LoginSerializer(serializers.Serializer):
     captcha = serializers.CharField(required=False, max_length=10)
 
     def validate(self, attrs):
+        print(attrs)
         username, password, received_captcha, captcha_id = attrs['username'], attrs[
             'password'], attrs.get('captcha'), attrs.get('captcha_id')
 

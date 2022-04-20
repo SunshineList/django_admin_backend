@@ -7,6 +7,7 @@ django-extra-fields==3.0.2
 django-filter==21.1
 django-imagekit==4.1.0
 django-simple-captcha==0.5.17
+django-cors-headers==3.11.0
 
 drf-yasg==1.20.0
 python-dateutil==2.8.2
