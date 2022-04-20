@@ -246,8 +246,7 @@ REST_FRAMEWORK = {
     ),
     'EXCEPTION_HANDLER':
         'common.exception_handler.my_exception_handler',
-    'DEFAULT_SCHEMA_CLASS':
-        'common.schema.VerboseNameSchema',
+
     'TEST_REQUEST_DEFAULT_FORMAT':
         'json'
 }
@@ -285,3 +284,6 @@ CAPTCHA_NOISE_FUNCTIONS = (
 )
 # CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge' #字母验证码
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'  # 加减乘除验证码
+
+
+AUTH_USER_MODEL = 'account.UsersModel'

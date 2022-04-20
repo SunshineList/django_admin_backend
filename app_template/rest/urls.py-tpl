@@ -5,5 +5,7 @@ router = DefaultRouter()
 
 
 urlpatterns = [
-    url(r'^', include(router.urls, namespace='')),
+
 ]
+
+urlpatterns += router.urls

@@ -23,6 +23,7 @@ from rest_framework import permissions
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('rest/v1/api/user/', include('account.rest.urls'))
 ]
 
 if settings.DEBUG:

@@ -17,7 +17,7 @@ class ImageCaptcha(models.Model):
         verbose_name_plural = verbose_name
 
 
-class UsersModel(AbstractUser):
+class UsersModel(AbstractUser, models.Model):
     ADMIN = "ADMIN"
     USER = "USER"
 
@@ -46,4 +46,8 @@ class UsersModel(AbstractUser):
         verbose_name_plural = '账号管理'
 
     def __str__(self) -> str:
+        return self.first_name or self.username
+
+    @property
+    def name(self):
         return self.first_name or self.username
