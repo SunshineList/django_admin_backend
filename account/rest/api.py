@@ -123,7 +123,6 @@ class UserInfoView(APIView):
     获取用户信息
     """
     permission_classes = (permissions.IsAuthenticated,)
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
     serializer_class = UserInfoSerializer
 
     @swagger_auto_schema(responses={'200': openapi.Response('用户信息')}, tags=['用户信息'])
@@ -132,4 +131,4 @@ class UserInfoView(APIView):
         获取用户信息
         """
         user = request.user
-        return Response(UserInfoSerializer(user).data)
+        return Response(UserInfoSerializer(user, context={'request': request}).data)

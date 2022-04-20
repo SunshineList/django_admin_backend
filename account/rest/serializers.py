@@ -10,6 +10,9 @@ from account.models import ImageCaptcha, UsersModel
 
 
 # 自己画的验证码的序列化器实现方式
+from common.rest_utils import CustomModelSerializer
+
+
 class LoginOneSerializer(serializers.Serializer):
     username = serializers.CharField(required=True, error_messages={'blank': u'用户名不能为空'})
     password = serializers.CharField(style={'input_type': 'password'},
@@ -52,7 +55,6 @@ class LoginSerializer(serializers.Serializer):
     captcha = serializers.CharField(required=False, max_length=10)
 
     def validate(self, attrs):
-        print(attrs)
         username, password, received_captcha, captcha_id = attrs['username'], attrs[
             'password'], attrs.get('captcha'), attrs.get('captcha_id')
 
@@ -86,7 +88,7 @@ class LoginSerializer(serializers.Serializer):
 
 
 # 用户个人信息的序列化器
-class UserInfoSerializer(serializers.ModelSerializer):
+class UserInfoSerializer(CustomModelSerializer):
     class Meta:
         model = UsersModel
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active', 'is_superuser',
