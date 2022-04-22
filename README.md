@@ -78,3 +78,16 @@ about python3.8 + django 3.2.9
     |-- startapp.py  # 创建app   python startapp.py app_name 根据上面的app_template模板创建app
 
 
+
+# yapf使用教程
+  
+   ## 安装
+    pip install yapf  注意这个不是在项目pip里面安装 而是要在自己电脑环境的pip里面安装
+    
+   ## 脚本文件
+    在项目根目录下的yapf_script.txt
+
+   ## 使用方法
+    将yapf_script.txt文件放到.git/hooks/post-commit中  这里的post-commit要自己手动创建 然后就可以使用yapf了
+    
+   

@@ -23,7 +23,8 @@ from rest_framework import permissions
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('rest/v1/api/user/', include('account.rest.urls'))
+    path('rest/v1/api/user/', include('account.rest.urls')),
+    path('rest/v1/api/common/', include('common.rest.urls'))
 ]
 
 if settings.DEBUG:
@@ -43,12 +44,11 @@ if settings.DEBUG:
     urlpatterns += [
         re_path(r'^api/', include('rest_framework.urls', namespace='rest_framework_docs')),
         re_path(r'^swagger(?P<format>\.json|\.yaml)$',
-            schema_view.without_ui(cache_timeout=0),
-            name='schema-json'),
+                schema_view.without_ui(cache_timeout=0),
+                name='schema-json'),
         re_path(r'^swagger/$',
-            schema_view.with_ui('swagger', cache_timeout=0),
-            name='schema-swagger-ui'),
+                schema_view.with_ui('swagger', cache_timeout=0),
+                name='schema-swagger-ui'),
         re_path('^redoc/$', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-
-    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL,
-                                                                                      document_root=settings.STATIC_URL)
+    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(
+        settings.STATIC_URL, document_root=settings.STATIC_URL)
