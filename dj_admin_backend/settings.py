@@ -30,21 +30,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'account.apps.AccountConfig',
-    'common.apps.CommonConfig',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'drf_yasg',
-    'drf_extra_fields',
-    'django_filters',
-    'daterange_filter',
-    'captcha'
+    'operation_log.apps.OperationLogConfig', 'account.apps.AccountConfig',
+    'common.apps.CommonConfig', 'django.contrib.admin', 'django.contrib.auth',
+    'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages',
+    'django.contrib.staticfiles', 'rest_framework', 'rest_framework.authtoken', 'drf_yasg',
+    'drf_extra_fields', 'django_filters', 'daterange_filter', 'captcha'
 ]
 
 MIDDLEWARE = [
@@ -140,7 +130,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(BASE_DIR, 'static'),)
+    os.path.join(BASE_DIR, 'static'), )
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -159,7 +149,7 @@ LOGGING = {
     'formatters': {
         'detail': {
             'format':
-                '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d[%(pathname)s:%(lineno)d] %(message)s'
+            '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d[%(pathname)s:%(lineno)d] %(message)s'
         },
         'verbose': {
             'format': '%(levelname)s %(asctime)s [%(pathname)s:%(lineno)d] %(message)s'
@@ -236,19 +226,18 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS':
-        'common.pagination.CommonPagination',
+    'common.pagination.CommonPagination',
     'PAGE_SIZE':
-        20,
+    20,
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework.filters.OrderingFilter',
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
     ),
     'EXCEPTION_HANDLER':
-        'common.exception_handler.my_exception_handler',
-
+    'common.exception_handler.my_exception_handler',
     'TEST_REQUEST_DEFAULT_FORMAT':
-        'json'
+    'json'
 }
 
 SWAGGER_SETTINGS = {
@@ -285,9 +274,7 @@ CAPTCHA_NOISE_FUNCTIONS = (
 # CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge' #字母验证码
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'  # 加减乘除验证码
 
-
 AUTH_USER_MODEL = 'account.UsersModel'
-
 
 ########################## 跨域问题只在开发环境下配置
 if DEBUG:
