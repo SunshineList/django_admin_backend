@@ -432,11 +432,6 @@ class ActiveMixin(object):
 
     @action(methods=['post'], detail=True)
     def active(self, request, *args, **kwargs):
-        """
-        设置医院状态
-        :param request:
-        :return:
-        """
         is_active = request.data.get('is_active')
         instance = self.get_object()
         # instance.is_active = bool(is_active)

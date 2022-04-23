@@ -27,7 +27,7 @@ class CustomChoiceFieldInspector(ChoiceFieldInspector):
                 for choice in field.choices.keys():
                     enum_values.append(field_value_to_representation(field, [choice])[0])
             else:
-                for value, name in field.choices.iteritems():
+                for value, name in field.choices.items():
                     choice = json.dumps({
                         'name': name,
                         'value': value

@@ -1,5 +1,13 @@
 # djang_admin_backend
-about python3.8 + django 3.2.9
+
+# 使用说明
+   * **根目录下面需要创建一个log文件夹**
+   * **复制conf文件夹里面的env_example.py到conf文件夹下面并重命名为env.py**
+   * **执行 pip install -r requirements.txt(最好使用虚拟环境  anaconda)**
+   * **执行 python manage.py makemigrations**
+   * **执行 python manage.py migrate**
+   * **执行 python manage.py createsuperuser  创建超级用户**
+   * **执行 python manage.py runserver**
 
 # 文件结构树
     |-- app_template   # 应用模板  用来快速生成app模板

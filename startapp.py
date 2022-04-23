@@ -53,7 +53,7 @@ class Command(NewTemplateCommand):
     def handle(self, *args, **options):
         # 做假数据欺骗Django command
         options = {
-            "name": options["name"], #sys.argv[1],
+            "name": options["name"],  # sys.argv[1],
             "directory": None,
             "verbosity": 1,
             "extensions": ['py'],
@@ -84,7 +84,8 @@ class Command(NewTemplateCommand):
 
         # 自动注册进settings 但是这块写入挺难受的
         self.alter(file=file,
-                   new_str="'%s'" % (".".join([app_name, "apps", str(app_name).capitalize() + "Config"])) + ",\n")
+                   new_str="'%s'" % (".".join([app_name, "apps", str(app_name).capitalize() + "Config"])).replace("-",
+                                                                                                                  "") + ",\n")
 
     def alter(self, file, new_str=None):
         file_data = []
@@ -94,6 +95,7 @@ class Command(NewTemplateCommand):
                     file_data.append(line)
                     if "INSTALLED_APPS" in line:
                         file_data.insert(index + 1, "    " + new_str)
+                        break
             with open(file, "w", encoding="utf-8") as f:
                 f.write("".join(file_data))
         else:
@@ -102,14 +104,16 @@ class Command(NewTemplateCommand):
                     file_data.append(line)
                     if "INSTALLED_APPS" in line:
                         file_data.insert(index + 1, "    " + new_str)
+                        break
             with open(file, "w") as f:
                 f.write("".join(file_data))
+
 
 if __name__ == "__main__":
     # 兼容两种运行方法 1. python startapp.py 模块名称    2. python startapp.py 手动输入模块名
     try:
         app_name = sys.argv[1]
-    except IndexError :
+    except IndexError:
         app_name = sys.version_info < (3, 0) and raw_input("输入app模块名: ") or input(
             "输入app模块名: ")  # 兼容Python2 和 Python3的输入
         if not app_name:

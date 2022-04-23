@@ -23,12 +23,22 @@ class UsersModel(AbstractUser, models.Model):
 
     USER_TYPE = (
         (ADMIN, "管理员"),
-        (USER, "普通用户"),
+        (USER, "普通用户")
+    )
+
+    MALE = "1"
+    FEMALE = "2"
+    UNKNOW = "0"
+
+    GENDER = (
+        (MALE, "男"),
+        (FEMALE, "女"),
+        (UNKNOW, "未知")
     )
 
     mobile = models.CharField("手机号", max_length=10, unique=True)
     user_type = models.CharField("用户类型", max_length=10, choices=USER_TYPE, default=USER)
-
+    gender = models.CharField("性别", max_length=5, choices="", default=UNKNOW)
     avatar = ProcessedImageField(
         help_text="压缩图片",
         upload_to='avatar/%Y/%m/%d',

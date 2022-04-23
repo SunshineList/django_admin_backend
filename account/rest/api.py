@@ -10,11 +10,12 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions, exceptions, status
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.authtoken.models import Token
+from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 
-from account.models import ImageCaptcha
+from account.models import ImageCaptcha, UsersModel
 from account.rest.serializers import LoginSerializer, UserInfoSerializer
-from common.rest_utils import CustomCaptcha as imagescaptcha
+from common.rest_utils import CustomCaptcha as imagescaptcha, ActiveMixin
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -132,3 +133,13 @@ class UserInfoView(APIView):
         """
         user = request.user
         return Response(UserInfoSerializer(user, context={'request': request}).data)
+
+
+class AccountViewSet(ActiveMixin, ModelViewSet):
+    """
+    用户列表
+    """
+    queryset = UsersModel.objects.all()
+    serializer_class = UserInfoSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    ordering = ('-date_joined',)

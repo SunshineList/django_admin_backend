@@ -8,7 +8,6 @@ from rest_framework.exceptions import ValidationError
 
 from account.models import ImageCaptcha, UsersModel
 
-
 # 自己画的验证码的序列化器实现方式
 from common.rest_utils import CustomModelSerializer
 
@@ -87,9 +86,23 @@ class LoginSerializer(serializers.Serializer):
         return attrs
 
 
-# 用户个人信息的序列化器
+# 用户序列化器
 class UserInfoSerializer(CustomModelSerializer):
     class Meta:
         model = UsersModel
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active', 'is_superuser',
-                  'date_joined', 'mobile', 'avatar', 'user_type', 'get_user_type_display', 'name')
+        fields = ('id', 'username', 'email', 'first_name', 'is_active', 'is_superuser',
+                  'date_joined', 'mobile', 'avatar', 'user_type', 'get_user_type_display', 'name', 'password',
+                  'gender', 'get_gender_display')
+
+        extra_kwargs = {'password': {'write_only': True, 'required': False, 'allow_null': True}}
+
+    def create(self, validated_data):
+        password = validated_data.pop('password', None)
+
+        instance = super(UserInfoSerializer, self).create(validated_data)
+
+        instance.set_password(password)
+        instance.save()
+
+    def update(self, instance, validated_data):
+        return super(UserInfoSerializer, self).update(instance, validated_data)

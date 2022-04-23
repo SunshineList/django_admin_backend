@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from common.models import UploadFileName
+
 
 class UploadFileSerializer(serializers.Serializer):
     files = serializers.ListField(child=serializers.FileField(max_length=100000,
@@ -9,3 +11,9 @@ class UploadFileSerializer(serializers.Serializer):
 
     class Meta:
         fields = ('files', )
+
+
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UploadFileName
+        fields = ('id', 'uuid_name', 'name', 'url')
