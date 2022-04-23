@@ -9,12 +9,12 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+from conf.env import *
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -27,16 +27,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'operation_log.apps.OperationLogConfig', 'account.apps.AccountConfig',
+    'common.apps.CommonConfig', 'django.contrib.admin', 'django.contrib.auth',
+    'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.messages',
+    'django.contrib.staticfiles', 'rest_framework', 'rest_framework.authtoken', 'drf_yasg',
+    'drf_extra_fields', 'django_filters', 'daterange_filter', 'captcha'
 ]
 
 MIDDLEWARE = [
@@ -47,6 +45,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'operation_log.middlewares.OperationMiddleware',
 ]
 
 ROOT_URLCONF = 'dj_admin_backend.urls'
@@ -69,17 +68,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dj_admin_backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': DATABASE_ENGINE,
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': DATABASE_HOST,
+        'PORT': DATABASE_PORT,
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -99,27 +107,179 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
+DATETIME_FORMAT = 'Y-m-d H:i:s'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
+DATE_FORMAT = 'Y-m-d'
+TIME_FORMAT = 'H:i:s'
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(BASE_DIR, 'static'), )
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+########################日志配置
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'formatters': {
+        'detail': {
+            'format':
+            '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d[%(pathname)s:%(lineno)d] %(message)s'
+        },
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s [%(pathname)s:%(lineno)d] %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(asctime)s [%(lineno)d] %(message)s'
+        },
+        'operation': {
+            'format': '[%(asctime)s] %(message)s'
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'log', 'main.log'),
+            'formatter': 'verbose',
+            'maxBytes': 1024 * 1024 * 30,  # 30MB
+            'backupCount': 50,
+        },
+        'biz_file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'log', 'biz.log'),
+            'formatter': 'operation',
+            'maxBytes': 1024 * 1024 * 30,  # 30MB
+            'backupCount': 50,
+        },
+        'trade_file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'log', 'trade.log'),
+            'formatter': 'operation',
+            'maxBytes': 1024 * 1024 * 30,  # 30MB
+            'backupCount': 50,
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins', 'file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'my.server': {
+            'handlers': ['console', 'file'] if DEBUG else ['file'],
+            'level': 'DEBUG' if DEBUG else 'DEBUG'  # 'INFO'
+        },
+        'my.biz': {
+            'handlers': ['console', 'biz_file'] if DEBUG else ['biz_file'],
+            'level': 'DEBUG' if DEBUG else 'DEBUG'  # 'INFO'
+        },
+        'my.trade': {
+            'handlers': ['console', 'trade_file'] if DEBUG else ['trade_file'],
+            'level': 'DEBUG' if DEBUG else 'DEBUG'  # 'INFO'
+        }
+    }
+}
+
+########################## rest_framework配置
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS':
+    'common.pagination.CommonPagination',
+    'PAGE_SIZE':
+    20,
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework.filters.OrderingFilter',
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+    ),
+    'EXCEPTION_HANDLER':
+    'common.exception_handler.my_exception_handler',
+    'TEST_REQUEST_DEFAULT_FORMAT':
+    'json'
+}
+
+SWAGGER_SETTINGS = {
+    'DEFAULT_FIELD_INSPECTORS': [
+        # 注意choices字段自定义了一下
+        'common.docs.CustomChoiceFieldInspector',
+        'drf_yasg.inspectors.CamelCaseJSONFilter',
+        'drf_yasg.inspectors.ReferencingSerializerInspector',
+        'drf_yasg.inspectors.RelatedFieldInspector',
+        'drf_yasg.inspectors.FileFieldInspector',
+        'drf_yasg.inspectors.DictFieldInspector',
+        'drf_yasg.inspectors.JSONFieldInspector',
+        'drf_yasg.inspectors.HiddenFieldInspector',
+        'drf_yasg.inspectors.RecursiveFieldInspector',
+        'drf_yasg.inspectors.SerializerMethodFieldInspector',
+        'drf_yasg.inspectors.SimpleFieldInspector',
+        'drf_yasg.inspectors.StringDefaultFieldInspector',
+    ]
+}
+
+################配置验证码
+CAPTCHA_STATE = True
+CAPTCHA_IMAGE_SIZE = (160, 60)  # 设置 captcha 图片大小
+CAPTCHA_LENGTH = 4  # 字符个数
+CAPTCHA_TIMEOUT = 1  # 超时(minutes)
+CAPTCHA_OUTPUT_FORMAT = '%(image)s %(text_field)s %(hidden_field)s '
+CAPTCHA_FONT_SIZE = 40  # 字体大小
+CAPTCHA_FOREGROUND_COLOR = '#0033FF'  # 前景色
+CAPTCHA_BACKGROUND_COLOR = '#F5F7F4'  # 背景色
+CAPTCHA_NOISE_FUNCTIONS = (
+    'captcha.helpers.noise_arcs',  # 线
+    'captcha.helpers.noise_dots',  # 点
+)
+# CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.random_char_challenge' #字母验证码
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'  # 加减乘除验证码
+
+AUTH_USER_MODEL = 'account.UsersModel'
+
+########################## 跨域问题只在开发环境下配置
+if DEBUG:
+    INSTALLED_APPS.append('corsheaders')
+    MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
+    CORS_ORIGIN_ALLOW_ALL = True
+    CORS_ALLOW_CREDENTIALS = True
