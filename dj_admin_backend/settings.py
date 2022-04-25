@@ -46,6 +46,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'operation_log.middlewares.OperationMiddleware',
+    'operation_log.middlewares.LoginUserMiddleware'
 ]
 
 ROOT_URLCONF = 'dj_admin_backend.urls'

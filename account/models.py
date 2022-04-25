@@ -50,6 +50,8 @@ class UsersModel(AbstractUser, models.Model):
 
     is_active = models.BooleanField("账号是否生效", default=True)
 
+
+
     class Meta:
         db_table = 'users'
         verbose_name = '账号管理'

@@ -1,14 +1,32 @@
+import threading
+
 from django.contrib.auth.models import AnonymousUser
 from django.utils.deprecation import MiddlewareMixin
 from django.conf import settings
 from operation_log.models import OperationLog
 from operation_log.utils import get_request_ip, get_verbose_name
 
+_request = {}
+
+
+def current_user():
+    tl = threading.current_thread()
+    if tl not in _request:
+        return None
+    return _request[tl].user
+
+
+class LoginUserMiddleware(MiddlewareMixin):
+
+    def process_request(self, request):
+        _request[threading.current_thread()] = request
+
 
 class OperationMiddleware(MiddlewareMixin):
     def __init__(self, get_response=None):
         super().__init__(get_response)
         self.op_id = None
+        self._exclude_url = []  # 不记录的url
         self.is_open_record = getattr(settings, "IS_OPEN_RECORD", False)
 
     def __handle_password(self, params):
@@ -25,11 +43,11 @@ class OperationMiddleware(MiddlewareMixin):
         """
         处理参数保存日志
         """
-        if not self.op_id:
+        if self.op_id:
             params = request.method == 'GET' and request.GET or request.POST
             op_data = {
                 "operation_ip": get_request_ip(request),
-                "operation_user": getattr(request, 'user', None) or AnonymousUser(),  # 操作用户
+                "operation_user": not isinstance(current_user(), AnonymousUser) and current_user() or None,  # 操作用户
                 "operation_type": {
                     'GET': '查询',
                     "POST": "新增",
@@ -37,10 +55,9 @@ class OperationMiddleware(MiddlewareMixin):
                     "DELETE": "删除",
                 }.get(request.method, None),  # 操作类型
                 "operation_path": request.path,
-                "status": request.status_code == 200,
                 "operation_params": self.__handle_password(params),
             }
-            OperationLog.objects.create(**op_data)
+            OperationLog.objects.update_or_create(id=self.op_id, defaults=op_data)
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         """
@@ -51,8 +68,14 @@ class OperationMiddleware(MiddlewareMixin):
         :param view_kwargs:
         :return:
         """
-        if hasattr(view_func, 'queryset'):
-            vb_name = get_verbose_name(queryset=view_func.queryset)
+
+        for url in self._exclude_url:  # 判断是否在不记录的url列表中
+            if url in request.path:
+                return
+
+        # 暂时只记录有queryset的api
+        if hasattr(view_func, 'cls') and hasattr(view_func.cls, 'queryset'):
+            vb_name = get_verbose_name(queryset=view_func.cls.queryset)
             if vb_name and self.is_open_record:
                 instance = OperationLog.objects.create(operation_modular=vb_name)
                 self.op_id = instance.id
