@@ -5,6 +5,8 @@ from django.db import models
 # Create your models here.
 from imagekit.models import ProcessedImageField
 
+from common.models import BaseModel
+
 
 class ImageCaptcha(models.Model):
     uuid = models.UUIDField('uuid4', primary_key=True)
@@ -17,40 +19,30 @@ class ImageCaptcha(models.Model):
         verbose_name_plural = verbose_name
 
 
-class UsersModel(AbstractUser, models.Model):
+class UsersModel(AbstractUser, BaseModel):
     ADMIN = "ADMIN"
     USER = "USER"
 
-    USER_TYPE = (
-        (ADMIN, "管理员"),
-        (USER, "普通用户")
-    )
+    USER_TYPE = ((ADMIN, "管理员"), (USER, "普通用户"))
 
     MALE = "1"
     FEMALE = "2"
     UNKNOW = "0"
 
-    GENDER = (
-        (MALE, "男"),
-        (FEMALE, "女"),
-        (UNKNOW, "未知")
-    )
+    GENDER = ((MALE, "男"), (FEMALE, "女"), (UNKNOW, "未知"))
 
     mobile = models.CharField("手机号", max_length=10, unique=True)
     user_type = models.CharField("用户类型", max_length=10, choices=USER_TYPE, default=USER)
     gender = models.CharField("性别", max_length=5, choices="", default=UNKNOW)
-    avatar = ProcessedImageField(
-        help_text="压缩图片",
-        upload_to='avatar/%Y/%m/%d',
-        verbose_name=u'头像',
-        null=True,
-        blank=True,
-        format='JPEG',
-        options={'quality': settings.IMAGE_QUANLITY})
+    avatar = ProcessedImageField(help_text="压缩图片",
+                                 upload_to='avatar/%Y/%m/%d',
+                                 verbose_name=u'头像',
+                                 null=True,
+                                 blank=True,
+                                 format='JPEG',
+                                 options={'quality': settings.IMAGE_QUANLITY})
 
     is_active = models.BooleanField("账号是否生效", default=True)
-
-
 
     class Meta:
         db_table = 'users'
@@ -61,5 +53,5 @@ class UsersModel(AbstractUser, models.Model):
         return self.first_name or self.username
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.first_name or self.username
