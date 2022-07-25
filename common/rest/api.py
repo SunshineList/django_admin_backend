@@ -14,6 +14,7 @@ from rest_framework.response import Response
 
 from common.models import UploadFileName
 from common.rest.serializers import UploadFileSerializer, FileSerializer
+from common.weather import weather_api
 
 
 class UploadFileApiView(views.APIView):
@@ -58,17 +59,6 @@ class UploadFileApiView(views.APIView):
 class WeatherApiView(APIView):
     permission_classes = (permissions.AllowAny,)
 
-    def _request(self, city_name):
-        url = "http://wthrcdn.etouch.cn/weather_mini"
-        params = {
-            'city': city_name
-        }
-        try:
-            response = requests.get(url, params=params)
-        except Exception as e:
-            raise exceptions.ValidationError("未获取到天气信息")
-        return response.json()
-
     @swagger_auto_schema(
         responses={
             '200': openapi.Response('Success', FileSerializer),
@@ -80,7 +70,7 @@ class WeatherApiView(APIView):
         city_name = self.request.query_params.get('city_name')
         if not city_name:
             raise exceptions.ValidationError("请输入城市名称")
-        data = self._request(city_name)
+        data = weather_api.get_weather_for_city(city_name)
         return Response(data)
 
 
