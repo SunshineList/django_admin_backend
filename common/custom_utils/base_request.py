@@ -16,6 +16,8 @@ class BaseRequest(object):
         """
         通用request类 这里处理请求
         """
+        
+        method = str(method).lower()
 
         data_map = {"method": method, "url": self._url(url), "timeout": 5}
 

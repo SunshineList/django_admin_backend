@@ -80,12 +80,12 @@ class Command(NewTemplateCommand):
             settings.configure()
             django.setup()
 
-        file = "%s" % os.sep.join([file_path, file_path.split("%s" % os.sep)[-1], "settings.py"])
+        # file = "%s" % os.sep.join([file_path, file_path.split("%s" % os.sep)[-1], "settings.py"])
 
         # 自动注册进settings 但是这块写入挺难受的
-        self.alter(file=file,
-                   new_str="'%s'" % (".".join([app_name, "apps", str(app_name).capitalize() + "Config"])).replace("-",
-                                                                                                                  "") + ",\n")
+        # self.alter(file=file,
+        #            new_str="'%s'" % (".".join([app_name, "apps", str(app_name).capitalize() + "Config"])).replace("-",
+        #                                                                                                           "") + ",\n")
 
     def alter(self, file, new_str=None):
         file_data = []

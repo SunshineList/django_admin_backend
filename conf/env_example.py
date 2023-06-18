@@ -8,7 +8,7 @@
 """
 import os
 
-from dj_admin_backend.settings import BASE_DIR
+from django_admin_backend.settings import BASE_DIR
 
 DATABASE_ENGINE = "django.db.backends.sqlite3"
 # 数据库名
